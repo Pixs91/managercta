@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+  <title>Driver Summary</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .leader-card {
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      color: #212529;
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0;
+    }
+
+    .gold   { background-color: #ffd700; }
+    .silver { background-color: #c0c0c0; }
+    .bronze { background-color: #cd7f32; color: white; }
+
+    .fade-delay-0 { animation-delay: 0ms; }
+    .fade-delay-1 { animation-delay: 200ms; }
+    .fade-delay-2 { animation-delay: 400ms; }
+
+.table th, .table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+
+    tr.gold   { background-color: #fff7cc !important; }
+    tr.silver { background-color: #f3f3f3 !important; }
+    tr.bronze { background-color: #f8e0cc !important; }
+
+    .driver-button {
+      display: block;
+      border: none;
+      padding: 0.6rem 1rem;
+      text-align: center;
+      background: linear-gradient(135deg, #f0f0f0, #e2e6ea);
+      color: #212529;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.2s ease-in-out;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .driver-button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #dee2e6, #cbd3da);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      color: #000;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body class="bg-light py-5">
+  <div class="container">
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>🏁 Top 3 Drivers</h2>
+  <a href="/logout" class="btn btn-outline-danger btn-sm">🚪 Log Out</a>
+  <div class="mb-3">
+  <span class="text-muted">🗓️ Week: <strong>{{ week }}</strong></span><br>
+</div>
+
+</div>
+
+
+    {% for row in top3 %}
+      <div class="leader-card {{ ['gold','silver','bronze'][loop.index0] }} fade-delay-{{ loop.index0 }}">
+        <h5 class="mb-1">
+          <strong>
+            {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% endif %}
+            {{ row.driver }}
+          </strong>
+        </h5>
+        <p class="mb-0">Total Earnings: <strong>{{ row.total_earnings }}</strong></p>
+      </div>
+    {% endfor %}
+
+    <div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+      <h4>📊 Full Driver Earnings Summary</h4>
+      <a href="/download_all/{{ week|urlencode }}" class="btn btn-success">📦 Download All Drivers (ZIP)</a>
+    </div>
+       <!-- Full Driver Summary -->
+
+      <div class="text-center mt-4">
+  <a href="/history" class="driver-button">
+    📚 View History Archive
+  </a>
+</div>
+      <table class="table table-bordered bg-white">
+        <thead class="table-light">
+          <tr>
+            {% for header in table_headers %}
+              <th>{{ header }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in summary_table %}
+            <tr class="{% if row.highlight %}highlight-row{% endif %}">
+              <td>
+<a href="/driver/{{ row.driver.replace(' ', '_') }}" style="color: inherit; text-decoration: none;">
+  {{ row.driver }}
+</a>
+              </td>
+              <td>{{ row['uber net earnings'] }}</td>
+              <td>{{ row['uber cash earnings'] }}</td>
+              <td>{{ row['bolt net earnings'] }}</td>
+              <td>{{ row['bolt cash earnings'] }}</td>
+              <td>{{ row['total earnings'] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+        <table>
+    <thead>
+      <tr>
+        {% for header in table_headers %}
+          <th>{{ header }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in summary_table %}
+        <tr {% if row.highlight %} class="highlight" {% endif %}>
+          {% for key in table_headers %}
+            <td>{{ row[key.lower()] }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+    </div>
+    <!-- Downloads -->
+    <div class="row g-3 mb-4">
+            <h5 class="mb-3 text-center">📂 Download Driver Reports</h5>
+  {% for name, file in driver_links %}
+          <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+    <a href="/download/{{ week|urlencode }}/{{ file|urlencode }}" class="driver-button">{{ name }}</a>
+                </div>
+  {% endfor %}
+</div>
+
+    <a href="/" class="btn btn-secondary mt-4">⬅️ Back to Upload</a>
+  </div>
+</body>
+</html>

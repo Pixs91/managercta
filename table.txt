@@ -1,0 +1,51 @@
+  <div class="table-responsive">
+    <table class="table table-bordered bg-white">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Șofer</th>
+          <th>Câștig Net Bolt</th>
+          <th>Câștig Net Uber</th>
+          <th>Total Net</th>
+          <th>Comision 10%</th>
+          <th>După Comision</th>
+          <th>Contabil</th>
+          <th>Numerar Bolt</th>
+          <th>Numerar Uber</th>
+          <th>Numerar Total</th>
+          <th>De Plătit</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in summary %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ row.driver }}</td>
+            <td>{{ "%.2f"|format(row.bolt_net) }}</td>
+            <td>{{ "%.2f"|format(row.uber_net) }}</td>
+            <td>{{ "%.2f"|format(row.total_net) }}</td>
+            <td>{{ "%.2f"|format(row.commission) }}</td>
+            <td>{{ "%.2f"|format(row.after_commission) }}</td>
+            <td>{{ "%.2f"|format(row.service_fee) }}</td>
+            <td>{{ "%.2f"|format(row.bolt_cash) }}</td>
+            <td>{{ "%.2f"|format(row.uber_cash) }}</td>
+            <td>{{ "%.2f"|format(row.total_cash) }}</td>
+            <td><strong>{{ "%.2f"|format(row.to_be_paid) }}</strong></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot style="font-weight:bold; background:#04eb22;">
+  <tr>
+    <td>Total</td>
+    <td></td>
+    <td>{{ summary | sum(attribute='bolt_net') | round(2) }}</td>
+    <td>{{ summary | sum(attribute='uber_net') | round(2) }}</td>
+    <td></td>
+    <td></td>
+    <td>{{ summary | sum(attribute='bolt_cash') | round(2) }}</td>
+    <td>{{ summary | sum(attribute='uber_cash') | round(2) }}</td>
+    <td colspan="2"></td>
+  </tr>
+</tfoot>
+    </table>
+  </div>
